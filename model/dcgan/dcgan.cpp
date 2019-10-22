@@ -15,12 +15,18 @@ const int64_t kBatchSize = 64;
 // The number of epochs to train.
 const int64_t kNumberOfEpochs = 30;
 
+// After how many batches to create a new checkpoint periodically.
+const int64_t kCheckpointEvery = 200;
+
 // Set to `true` to restore models and optimizers from previously saved
 // checkpoints.
 const bool kRestoreFromCheckpoint = false;
 
 // After how many batches to log a new update with the loss value.
 const int64_t kLogInterval = 10;
+
+// How many images to sample at every checkpoint.
+const int64_t kNumberOfSamplesPerCheckpoint = 10;
 
 
 struct DCGANGeneratorImpl : nn::Module {
@@ -61,7 +67,7 @@ struct DCGANGeneratorImpl : nn::Module {
         x = torch::relu(batch_norm1(conv1(x)));
         x = torch::relu(batch_norm2(conv2(x)));
         x = torch::relu(batch_norm3(conv3(x)));
-        x = torch::relu(conv4(x));
+        x = torch::tanh(conv4(x));
         return x;
     }
 
@@ -107,7 +113,7 @@ struct DCGANDiscriminatorImpl : nn::Module {
         x = torch::relu(batch_norm1(conv1(x)));
         x = torch::relu(batch_norm2(conv2(x)));
         x = torch::relu(batch_norm3(conv3(x)));
-        x = torch::tanh(conv4(x));
+        x = torch::sigmoid(conv4(x));
         return x;
     }
 
@@ -157,6 +163,7 @@ int main(int argc, char *argv[]){
         torch::load(discriminator_optimizer, "discriminator-optimizer-checkpoint.pt");
     }
 
+    int64_t checkpoint_counter = 1;
     for (int64_t epoch = 1; epoch <= kNumberOfEpochs; ++epoch){
         int64_t batch_index = 0;
         for (torch::data::Example<>& batch : *data_loader){
@@ -206,7 +213,26 @@ int main(int argc, char *argv[]){
                 );
             }
 
+            if (batch_index % kCheckpointEvery == 0){
+                // checkpoint the model and optimizer state.
+                torch::save(generator, "generator-checkpoint.pt");
+                torch::save(generator_optimizer, "generator-optimizer-checkpoint.pt");
+                torch::save(discriminator, "discriminator-checkpoint.pt");
+                torch::save(
+                    discriminator_optimizer, "discriminator-optimizer-checkpoint.pt"
+                );
+                torch::Tensor samples = generator->forward(torch::randn(
+                    {kNumberOfSamplesPerCheckpoint, kNoiseSize, 1, 1}, device
+                ));
+                torch::save(
+                    (samples + 1.0) / 2.0,
+                    torch::str("dcgan-sample-", checkpoint_counter, ".pt")
+                );
+                std::cout << "\n-> checkpoint" << ++checkpoint_counter << '\n';
+            }
         }
     }
+
+    std::cout << "Training complete!" << std::endl;
     return 0;
 }

@@ -1,6 +1,4 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "presentation": {
         "echo": true,
@@ -16,7 +14,8 @@
             "type": "shell",
             "command": "mkdir",
             "args": [
-                "-p", "build"
+                "-p",
+                "build"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -30,13 +29,15 @@
                 "cwd": "${workspaceFolder}/build"
             },
             "args": [
-                "-G", 
-                "'Unix Makefiles'", 
-                "-DCMAKE_PREFIX_PATH=${workspaceFolder}/libtorch", 
+                "-G",
+                "'Unix Makefiles'",
+                "-DCMAKE_PREFIX_PATH=${workspaceFolder}/libtorch",
                 "-DCMAKE_BUILD_TYPE=Debug",
                 ".."
             ],
-            "dependsOn":["makedir"]
+            "dependsOn": [
+                "makedir"
+            ]
         },
         {
             "label": "make",
@@ -46,13 +47,43 @@
                 "-j",
                 "8"
             ],
-            "dependsOn":["cmake"],
+            "dependsOn": [
+                "cmake"
+            ],
             "options": {
                 "cwd": "${workspaceFolder}/build"
             },
             "group": {
                 "isDefault": true,
                 "kind": "build"
+            }
+        },
+        {
+            "type": "shell",
+            "label": "g++ build active file",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            }
+        },
+        {
+            "type": "shell",
+            "label": "cpp build active file",
+            "command": "/usr/bin/cpp",
+            "args": [
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
             }
         }
     ]

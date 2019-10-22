@@ -31,7 +31,7 @@
             "args": [
                 "-G",
                 "'Unix Makefiles'",
-                "-DCMAKE_PREFIX_PATH=${workspaceFolder}/libtorch",
+                "-DCMAKE_PREFIX_PATH=${workspaceFolder}/third_party/libtorch",
                 "-DCMAKE_BUILD_TYPE=Debug",
                 ".."
             ],

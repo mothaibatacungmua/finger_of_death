@@ -1,13 +1,14 @@
 #include <map>
 #include <memory>
 #include <string>
-#include <nlohmann/json.hpp>
+#include "nlohmann/json.hpp"
 
 using namespace std;
 
 
 class MapFieldInterface
 {
+public:
     ~MapFieldInterface() = default;
 };
 
@@ -57,7 +58,7 @@ public:
 
     // Construction without any parameters
     BertConfig();
-    ~BertConfig();
+    ~BertConfig(){};
 
     static BertConfig fromMap(map<string, unique_ptr<MapFieldInterface>> mapObject);
     static BertConfig fromJson(nlohmann::json jsonObject);

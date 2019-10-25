@@ -4,7 +4,7 @@
 // https://github.com/huggingface/transformers/blob/master/transformers/modeling_bert.py
 
 namespace BERT{
-namespace Layers{
+namespace Modeling{
     struct EmbeddingImpl : torch::nn::Module{
         EmbeddingImpl(BertConfig config);
 
@@ -15,7 +15,8 @@ namespace Layers{
         torch::nn::LayerNorm layer_norm;
         torch::nn::Dropout dropout;
 
-        torch::Tensor forward(torch::Tensor input_ids, torch::Tensor token_type_ids, torch::Tensor position_ids);
+        torch::Tensor forward(torch::Tensor input_ids, 
+            torch::Tensor position_ids, torch::Tensor token_type_ids);
     };
     TORCH_MODULE(Embedding);
 

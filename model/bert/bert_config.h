@@ -10,31 +10,33 @@ namespace BERT
     class BertConfig
     {
     public:
-        int vocabSize;
-        int hiddenSize;
-        int numHiddenLayers;
-        int numAttentionHeads;
-        int intermediateSize;
-        std::string hiddenAct;
-        float hiddenDropoutProb;
-        float attentionProbsDropoutProb;
-        float maxPositionEmbeddings;
-        int typeVocabSize;
-        float initializerRange;
+        int vocab_size;
+        int hidden_size;
+        int num_hidden_layers;
+        int num_attention_heads;
+        int intermediate_size;
+        std::string hidden_act;
+        float hidden_dropout_prob;
+        float attention_probs_dropout_prob;
+        float max_position_embeddings;
+        int type_vocab_size;
+        float initializer_range;
+        float layer_norm_eps;
+        bool output_attentions;
 
         // Construction with full parameters
         BertConfig(
-            int vocabSize,
-            int hiddenSize,
-            int numHiddenLayers,
-            int numAttentionHeads,
-            int intermediateSize,
-            std::string hiddenAct,
-            float hiddenDropoutProb,
-            float attentionProbsDropoutProb,
-            float maxPositionEmbeddings,
-            int typeVocabSize,
-            float initializerRange
+            int vocab_size,
+            int hidden_size,
+            int num_hidden_layers,
+            int num_attention_heads,
+            int intermediate_size,
+            std::string hidden_act,
+            float hidden_dropout_prob,
+            float attention_probs_dropout_prob,
+            float max_position_embeddings,
+            int type_vocab_size,
+            float initializer_range
         );
 
         // Construction without any parameters

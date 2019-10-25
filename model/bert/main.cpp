@@ -3,9 +3,9 @@
 
 
 int main(){
-    BertConfig config;
+    BERT::BertConfig config;
 
-    cout << config.vocabSize;
+    std::cout << config.vocabSize;
 
     return 0;
 }

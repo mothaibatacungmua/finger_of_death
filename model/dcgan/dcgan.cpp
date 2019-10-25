@@ -4,6 +4,7 @@
 #include <cmath>
 #include <string>
 
+// https://github.com/pytorch/examples/blob/master/cpp/dcgan/dcgan.cpp
 using namespace torch;
 
 // The size of the noise vector fed to the generator.

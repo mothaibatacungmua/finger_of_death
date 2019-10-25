@@ -4,7 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/third_party/libtorch/include",
+                "${env:CONDA_PREFIX}/envs/upwork/lib/python3.6/site-packages/torch/include/**",
                 "${workspaceFolder}/third_party/**"
             ],
             "defines": [],

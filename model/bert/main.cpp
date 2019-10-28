@@ -5,7 +5,7 @@
 int main(){
     BERT::BertConfig config;
 
-    std::cout << config.vocabSize;
+    std::cout << config.vocab_size;
 
     return 0;
 }

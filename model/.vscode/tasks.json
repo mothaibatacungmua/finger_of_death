@@ -31,7 +31,7 @@
             "args": [
                 "-G",
                 "'Unix Makefiles'",
-                "-DCMAKE_PREFIX_PATH=${workspaceFolder}/third_party/libtorch",
+                "-DCMAKE_PREFIX_PATH=${env:CONDA_PREFIX}/envs/upwork/lib/python3.6/site-packages/torch",
                 "-DCMAKE_BUILD_TYPE=Debug",
                 ".."
             ],

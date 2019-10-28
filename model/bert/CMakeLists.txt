@@ -3,9 +3,12 @@ project(bert)
 
 include_directories(${CMAKE_SOURCE_DIR}/third_party)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+file(GLOB SRCS *.cpp)
 
-find_package(Torch REQUIRED)
-add_executable(${PROJECT_NAME} main.cpp bert_config.cpp utils.cpp modeling.cpp)
+add_executable(${PROJECT_NAME} ${SRCS})
+set_target_properties(${PROJECT_NAME} PROPERTIES
+  ENABLE_EXPORTS 1
+)
 target_link_libraries(${PROJECT_NAME} "${TORCH_LIBRARIES}")
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

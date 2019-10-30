@@ -41,5 +41,16 @@ namespace Modeling{
             torch::Tensor head_mask={});
     };
     TORCH_MODULE(SelfAttention);
+
+    struct SelfOutputImpl : torch::nn::Module{
+        SelfOutputImpl(BertConfig config);
+
+        torch::nn::Linear dense = nullptr;
+        torch::nn::LayerNorm layer_norm = nullptr;
+        torch::nn::Dropout dropout;
+
+        torch::Tensor forward(torch::Tensor hidden_states, torch::Tensor input_tensor);
+    };
+    TORCH_MODULE(SelfOutput);
 }
 }

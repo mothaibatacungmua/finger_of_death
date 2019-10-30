@@ -58,6 +58,11 @@
         "valarray": "cpp",
         "algorithm": "cpp",
         "memory": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "csignal": "cpp",
+        "hash_map": "cpp",
+        "hash_set": "cpp",
+        "regex": "cpp",
+        "codecvt": "cpp"
     }
 }

@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${env:CONDA_PREFIX}/envs/upwork/lib/python3.6/site-packages/torch/include/**",
-                "${workspaceFolder}/third_party/**"
+                "${workspaceFolder}/third_party/**",
+                "${workspaceFolder}/build/googletest/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

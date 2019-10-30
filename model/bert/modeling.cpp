@@ -15,7 +15,8 @@ namespace Modeling{
                                 config.type_vocab_size, config.hidden_size));
         layer_norm = torch::nn::LayerNorm(torch::nn::LayerNormOptions(
                                 std::vector<int64_t>{config.hidden_size}).eps(config.layer_norm_eps));
-        dropout = torch::nn::Dropout(torch::nn::DropoutOptions(config.hidden_dropout_prob));
+        dropout = torch::nn::Dropout(
+                    torch::nn::DropoutOptions(config.hidden_dropout_prob));
     }
 
     torch::Tensor EmbeddingImpl::forward(torch::Tensor input_ids, 
@@ -127,6 +128,22 @@ namespace Modeling{
         }
         
         return output;
+    }
+
+    SelfOutputImpl::SelfOutputImpl(BertConfig config){
+        dense = torch::nn::Linear(config.hidden_size, config.hidden_size);
+        layer_norm = torch::nn::LayerNorm(torch::nn::LayerNormOptions(
+                        std::vector<int64_t>{config.hidden_size}).eps(config.layer_norm_eps));
+        dropout = torch::nn::Dropout(
+                    torch::nn::DropoutOptions(config.hidden_dropout_prob));
+        
+    }
+
+    torch::Tensor SelfOutputImpl::forward(torch::Tensor hidden_states, torch::Tensor input_tensor){
+        hidden_states = dense(hidden_states);
+        hidden_states = dropout(hidden_states);
+        hidden_states = layer_norm(hidden_states + input_tensor); // residual
+        return hidden_states;
     }
 }
 }

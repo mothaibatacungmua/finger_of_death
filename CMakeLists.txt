@@ -15,8 +15,6 @@ fetch_googletest(
     ${PROJECT_SOURCE_DIR}/cmake-gtest
     ${PROJECT_BINARY_DIR}/googletest
 )
-# include_directories(${CMAKE_BINARY_DIR}/googletest/googletest-src/googletest/include)
-# include_directories(${CMAKE_BINARY_DIR}/googletest/googletest-src/googlemock/include)
 
 enable_testing()
 add_subdirectory(tests)

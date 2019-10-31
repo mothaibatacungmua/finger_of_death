@@ -8,6 +8,7 @@ file(GLOB SRCS *.cpp)
 add_executable(${PROJECT_NAME} ${SRCS})
 set_target_properties(${PROJECT_NAME} PROPERTIES
   ENABLE_EXPORTS 1
+  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/bert"
 )
 target_link_libraries(${PROJECT_NAME} "${TORCH_LIBRARIES}")
 

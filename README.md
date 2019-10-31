@@ -1,4 +1,4 @@
-## Some deep learning model in C++
+## Some machine learning and deep learning model in C++
 
   1. [DCGAN](/model/dcgan)
   

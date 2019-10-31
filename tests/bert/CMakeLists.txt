@@ -1,10 +1,12 @@
 file(GLOB SRCS *.cpp)
 project(bert_test)
 
+include_directories(${CMAKE_SOURCE_DIR}/third_party)
+
 add_executable(${PROJECT_NAME} ${SRCS})
 
 target_link_libraries(${PROJECT_NAME}
-    bert
+    lib_bert
     gtest_main
 )
 

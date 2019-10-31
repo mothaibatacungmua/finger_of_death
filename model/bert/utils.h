@@ -15,10 +15,9 @@ namespace BERT
     class MapField : public MapFieldInterface {
         T _value;
     public:
+        MapField() {}
         T get(){ return this->_value; }
-        MapField(T _value){
-            this->_value = _value;
-        };
+        explicit MapField(const T& data) : _value(data) {}
     };
 
     torch::Tensor Gelu(torch::Tensor x);
@@ -30,3 +29,4 @@ namespace BERT
 
 #define GET_V(mapObject, type, field) (static_cast<BERT::MapField<type>*>(mapObject[field].get()))->get()
 #define MAKE_V(type, value) std::unique_ptr<BERT::MapFieldInterface>(new BERT::MapField<type>(value))
+#define MAKE_P(field, type, value) std::move(std::make_pair(field, MAKE_V(type, value)))

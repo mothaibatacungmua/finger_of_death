@@ -1,7 +1,14 @@
 #include "bert_config.h"
+#include "common.h"
+#include <iostream>
 
 namespace BERT
-{
+{   
+    std::string BertConfig::_fields[NUMBER_OF_FIELDS] = { 
+            "vocab_size", "hidden_size", "num_hidden_layers", 
+            "num_attention_heads", "intermediate_size", "hidden_act", "hidden_dropout_prob", 
+            "attention_probs_dropout_prob", "max_position_embeddings", "type_vocab_size", "initializer_range"};
+
     BertConfig::BertConfig(int vocab_size,
             int hidden_size,
             int num_hidden_layers,
@@ -30,7 +37,7 @@ namespace BERT
     };
 
 
-    BertConfig::BertConfig():hidden_size(768),num_hidden_layers(12),
+    BertConfig::BertConfig():vocab_size(0), hidden_size(768),num_hidden_layers(12),
         num_attention_heads(12), intermediate_size(3072),
         hidden_act("gelu"), hidden_dropout_prob(0.1f),
         attention_probs_dropout_prob(0.1f), max_position_embeddings(512),
@@ -40,8 +47,14 @@ namespace BERT
         };
 
 
-    BertConfig BertConfig::fromMap(
-        std::map<std::string, std::unique_ptr<MapFieldInterface>> mapObject){
+    BertConfig BertConfig::fromMap(MapAnyType& mapObject){
+        for(int i=0; i<NUMBER_OF_FIELDS; i++){
+            if(mapObject.count(_fields[i]) == 0){
+                throw std::runtime_error(string_format(
+                    "The key (%s) is not in map", 
+                    _fields[i].c_str()));
+            }
+        }
         BertConfig ret;
 
         ret.vocab_size = GET_V(mapObject, int, "vocab_size");
@@ -83,20 +96,22 @@ namespace BERT
     }
 
 
-    std::map<std::string, std::unique_ptr<MapFieldInterface>> BertConfig::toMap(){
-        std::map<std::string, std::unique_ptr<MapFieldInterface>> ret;
+    MapAnyType BertConfig::toMap(){
+        MapAnyType ret;
 
-        ret["vocab_size"] = MAKE_V(int, this->vocab_size);
-        ret["hidden_size"] = MAKE_V(int, this->hidden_size);
-        ret["num_hidden_layers"] = MAKE_V(int, this->num_hidden_layers);
-        ret["num_attention_heads"] = MAKE_V(int, this->num_attention_heads);
-        ret["intermediate_size"] = MAKE_V(int, this->intermediate_size);
-        ret["hidden_act"] = MAKE_V(std::string, this->hidden_act);
-        ret["hidden_dropout_prob"] = MAKE_V(float, this->hidden_dropout_prob);
-        ret["attention_probs_dropout_prob"] = MAKE_V(float, this->attention_probs_dropout_prob);
-        ret["max_position_embeddings"] = MAKE_V(int, this->max_position_embeddings);
-        ret["type_vocab_size"] = MAKE_V(int, this->type_vocab_size);
-        ret["initializer_range"] = MAKE_V(float, this->initializer_range);
+        ret.insert(MAKE_P("vocab_size", int, this->vocab_size));
+        ret.insert(MAKE_P("hidden_size", int, this->hidden_size));
+        ret.insert(MAKE_P("num_hidden_layers", int, this->num_hidden_layers));
+        ret.insert(MAKE_P("num_attention_heads", int, this->num_attention_heads));
+        ret.insert(MAKE_P("intermediate_size", int, this->intermediate_size));
+        ret.insert(MAKE_P("hidden_act", std::string, this->hidden_act));
+        ret.insert(MAKE_P("hidden_dropout_prob", float, this->hidden_dropout_prob));
+        ret.insert(MAKE_P("attention_probs_dropout_prob", float, this->attention_probs_dropout_prob));
+        ret.insert(MAKE_P("max_position_embeddings", int, this->max_position_embeddings));
+        ret.insert(MAKE_P("type_vocab_size", int, this->type_vocab_size));
+        ret.insert(MAKE_P("initializer_range", float, this->initializer_range));
+
+        return ret;
     }
 
 

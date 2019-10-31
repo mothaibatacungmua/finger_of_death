@@ -63,6 +63,7 @@
         "hash_map": "cpp",
         "hash_set": "cpp",
         "regex": "cpp",
-        "codecvt": "cpp"
+        "codecvt": "cpp",
+        "alignedvector3": "cpp"
     }
 }

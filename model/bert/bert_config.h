@@ -4,11 +4,14 @@
 #include "nlohmann/json.hpp"
 #include "utils.h"
 
+#define MapAnyType std::map<std::string, std::unique_ptr<BERT::MapFieldInterface>>
+#define NUMBER_OF_FIELDS 11
 
 namespace BERT
 {
     class BertConfig
     {
+        
     public:
         int vocab_size;
         int hidden_size;
@@ -43,11 +46,11 @@ namespace BERT
         BertConfig();
         ~BertConfig(){};
 
-        static BertConfig fromMap(
-            std::map<std::string, std::unique_ptr<MapFieldInterface>> mapObject);
+        static std::string _fields[NUMBER_OF_FIELDS];
+        static BertConfig fromMap(MapAnyType& mapObject);
         static BertConfig fromJson(nlohmann::json jsonObject);
 
-        std::map<std::string, std::unique_ptr<MapFieldInterface>> toMap();
+        MapAnyType toMap();
         nlohmann::json toJson();  
     };
 }

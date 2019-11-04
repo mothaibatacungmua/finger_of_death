@@ -20,4 +20,4 @@ add_test(NAME ${PROJECT_NAME}
 
 add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
                     COMMAND ${CMAKE_COMMAND} -E copy_directory
-                        ${CMAKE_SOURCE_DIR}/tests/bert/data/ $<TARGET_FILE_DIR:${PROJECT_NAME}>/tests/data/)
+                        ${CMAKE_SOURCE_DIR}/tests/bert/data/ $<TARGET_FILE_DIR:${PROJECT_NAME}>/data/)

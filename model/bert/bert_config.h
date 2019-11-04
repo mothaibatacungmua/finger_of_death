@@ -1,3 +1,6 @@
+#ifndef BERT_CONFIG_H_
+#define BERT_CONFIG_H_
+
 #include <map>
 #include <memory>
 #include <string>
@@ -52,6 +55,9 @@ namespace BERT
 
         MapAnyType toMap();
         nlohmann::json toJson();  
+
+        BertConfig& operator=(BertConfig const &obj);
     };
 }
 
+#endif

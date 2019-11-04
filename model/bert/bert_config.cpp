@@ -50,7 +50,7 @@ namespace BERT
     BertConfig BertConfig::fromMap(MapAnyType& mapObject){
         for(int i=0; i<NUMBER_OF_FIELDS; i++){
             if(mapObject.count(_fields[i]) == 0){
-                throw std::runtime_error(string_format(
+                throw std::runtime_error(StringFormat(
                     "The key (%s) is not in map", 
                     _fields[i].c_str()));
             }
@@ -131,5 +131,21 @@ namespace BERT
         ret["initializer_range"] = this->initializer_range;
 
         return ret;
+    }
+
+    BertConfig& BertConfig::operator=(BertConfig const &obj){
+        this->vocab_size = obj.vocab_size;
+        this->hidden_size = obj.hidden_size;
+        this->num_hidden_layers = obj.num_hidden_layers;
+        this->num_attention_heads = obj.num_attention_heads;
+        this->intermediate_size = obj.intermediate_size;
+        this->hidden_act = obj.hidden_act;
+        this->hidden_dropout_prob = obj.hidden_dropout_prob;
+        this->attention_probs_dropout_prob = obj.attention_probs_dropout_prob;
+        this->max_position_embeddings = obj.max_position_embeddings;
+        this->type_vocab_size = obj.type_vocab_size;
+        this->initializer_range = obj.initializer_range;
+
+        return *this;
     }
 }

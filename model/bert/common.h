@@ -5,6 +5,6 @@
 #include <string.h>
 #include <memory>    // For std::unique_ptr
 
-std::string string_format(const std::string fmt_str, ...);
-
+std::string StringFormat(const std::string fmt_str, ...);
+void PrintFileContent(std::string filename);
 #endif

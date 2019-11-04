@@ -1,3 +1,6 @@
+#ifndef BERT_MODELING_H_
+#define BERT_MODELING_H_
+
 #include "bert_config.h"
 #include <torch/torch.h>
 
@@ -52,5 +55,9 @@ namespace Modeling{
         torch::Tensor forward(torch::Tensor hidden_states, torch::Tensor input_tensor);
     };
     TORCH_MODULE(SelfOutput);
+
+
 }
 }
+
+#endif

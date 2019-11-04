@@ -47,7 +47,7 @@ namespace Modeling{
 
     SelfAttentionImpl::SelfAttentionImpl(BertConfig config){
         if (config.hidden_size % config.num_attention_heads != 0){
-            throw std::runtime_error(string_format(
+            throw std::runtime_error(StringFormat(
                 "The hidden size (%d) is not a multiple of the number of attention heads (%d)", 
                 config.hidden_size, config.num_attention_heads));
         }

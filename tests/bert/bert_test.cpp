@@ -62,10 +62,21 @@ TEST_F(BertTest, TestFromJson){
     EXPECT_EQ(config.initializer_range, 0.01f);
 }
 
-// TEST_F(BertTest, TestEmbeddingShape){
-//     Modeling::Embedding embed_layer(config_map);
+TEST_F(BertTest, TestEmbeddingShape){
+    torch::Device cpu_device(torch::kCPU);
+    Modeling::Embedding embed_layer(test_config);
+    embed_layer->to(cpu_device);
 
-//     torch::Tensor input_ids = torch::randint(0,)
-//     std::cout << embed_layer.forward() << std::endl;
-// }
+    auto input_ids = torch::randint(
+        test_config.vocab_size, {batch_size, seq_length}).toType(torch::kLong);
+    auto position_ids = torch::randint(
+        test_config.max_position_embeddings, {batch_size, seq_length}).toType(torch::kLong);
+    auto token_type_ids = torch::randint(
+        test_config.type_vocab_size, {batch_size, seq_length}).toType(torch::kLong);
+
+    auto output = embed_layer->forward(input_ids, position_ids, token_type_ids);
+
+    EXPECT_EQ(output.sizes().at(0), batch_size);
+    EXPECT_EQ(output.sizes().at(1), seq_length);
+}
 }

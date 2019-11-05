@@ -41,7 +41,9 @@ namespace Modeling{
         std::vector<torch::Tensor> forward(
             torch::Tensor hidden_states, 
             torch::Tensor attention_mask={},
-            torch::Tensor head_mask={});
+            torch::Tensor head_mask={},
+            torch::Tensor encoder_hidden_states={}, 
+            torch::Tensor encoder_attention_mask={});
     };
     TORCH_MODULE(SelfAttention);
 
@@ -56,6 +58,24 @@ namespace Modeling{
     };
     TORCH_MODULE(SelfOutput);
 
+    struct BertAttentionImpl : torch::nn::Module{
+        BertAttentionImpl(BertConfig config);
+
+        SelfAttention self;
+        SelfOutput output;
+        std::set<int> pruned_heads;
+
+        std::vector<torch::Tensor> forward(
+            torch::Tensor hidden_states,
+            torch::Tensor attention_mask={},
+            torch::Tensor head_mask={},
+            torch::Tensor encoder_hidden_states={}, 
+            torch::Tensor encoder_attention_mask={}
+        );
+
+        void prunded_heads(std::vector<int> heads);
+    };
+    TORCH_MODULE(BertAttention);
 
 }
 }

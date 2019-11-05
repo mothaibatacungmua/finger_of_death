@@ -79,12 +79,28 @@ namespace Modeling{
     std::vector<torch::Tensor> SelfAttentionImpl::forward(
         torch::Tensor hidden_states,
         torch::Tensor attention_mask,
-        torch::Tensor head_mask
+        torch::Tensor head_mask,
+        torch::Tensor encoder_hidden_states,
+        torch::Tensor encoder_attention_mask
     ){
         /** Return shape [batch_size, seq_length, hidden_size] **/
         auto mixed_query_layer = this->query(hidden_states);
-        auto mixed_key_layer = this->key(hidden_states);
-        auto mixed_value_layer = this->value(hidden_states);
+        torch::Tensor mixed_key_layer;
+        torch::Tensor mixed_value_layer;
+
+        /**
+         * If this is instantiated as a cross-attention module, the keys
+         * and values come from an encoder; the attention mask needs to be
+         * such that the encoder's padding tokens are not attended to.
+        */
+        if(encoder_hidden_states.defined()){
+            mixed_key_layer = this->key(encoder_hidden_states);
+            mixed_value_layer = this->value(encoder_hidden_states);
+            attention_mask = encoder_attention_mask;
+        }else{
+            mixed_key_layer = this->key(hidden_states);
+            mixed_value_layer = this->value(hidden_states);
+        }
 
         /** Return shape [batch_size, num_attention_heads, seq_length, attention_head_size] **/
         auto query_layer = this->TransposeForScores(mixed_query_layer);
@@ -139,11 +155,55 @@ namespace Modeling{
         
     }
 
-    torch::Tensor SelfOutputImpl::forward(torch::Tensor hidden_states, torch::Tensor input_tensor){
+    torch::Tensor SelfOutputImpl::forward(
+            torch::Tensor hidden_states, torch::Tensor input_tensor){
         hidden_states = dense(hidden_states);
         hidden_states = dropout(hidden_states);
         hidden_states = layer_norm(hidden_states + input_tensor); // residual
         return hidden_states;
+    }
+
+    BertAttentionImpl::BertAttentionImpl(BertConfig config)
+        :self(config), output(config) {
+    }
+
+    std::vector<torch::Tensor> BertAttentionImpl::forward(
+            torch::Tensor hidden_states,
+            torch::Tensor attention_mask={},
+            torch::Tensor head_mask={},
+            torch::Tensor encoder_hidden_states={}, 
+            torch::Tensor encoder_attention_mask={}){
+        auto self_outputs = self->forward(
+                hidden_states, attention_mask, head_mask, 
+                encoder_hidden_states, encoder_attention_mask);
+        auto attention_output = output(self_outputs.at(0), hidden_states);
+        std::vector<torch::Tensor> outputs;
+        outputs.push_back(attention_output);
+
+        for(auto it=self_outputs.begin()+1; it != self_outputs.end(); ++it){
+            outputs.push_back(*it);
+        }
+
+        return outputs;
+    }
+
+    void BertAttentionImpl::prunded_heads(std::vector<int> heads){
+        if(heads.size() == 0){
+            return;
+        }
+
+        auto mask = torch::ones({self->num_attention_heads, self->attention_head_size});
+        std::set<int> sheads;
+
+        for(int i =0; i<heads.size; i++){
+            if(this->prunded_heads.count(heads.at(i)) <= 0){
+                sheads.insert(heads.at(i));
+            }
+        }
+
+        for(auto it=sheads.begin(); it != sheads.end(); ++it){
+            
+        }
     }
 }
 }

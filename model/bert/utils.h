@@ -25,6 +25,9 @@ namespace BERT
     torch::Tensor Relu(torch::Tensor x);
 
     ActFn GetActFn(const std::string name="gelu");
+
+    torch::nn::Linear PruneLinearLayer(
+        torch::nn::Linear layer, torch::Tensor index, int dim=0);
 }
 
 #define GET_V(mapObject, type, field) (static_cast<BERT::MapField<type>*>(mapObject[field].get()))->get()

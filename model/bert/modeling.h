@@ -73,7 +73,7 @@ namespace Modeling{
             torch::Tensor encoder_attention_mask={}
         );
 
-        void prunded_heads(std::vector<int> heads);
+        void prune_heads(std::vector<int> heads);
     };
     TORCH_MODULE(BertAttention);
 

@@ -187,22 +187,44 @@ namespace Modeling{
         return outputs;
     }
 
-    void BertAttentionImpl::prunded_heads(std::vector<int> heads){
+    void BertAttentionImpl::prune_heads(std::vector<int> heads){
         if(heads.size() == 0){
             return;
         }
 
-        auto mask = torch::ones({self->num_attention_heads, self->attention_head_size});
+        auto mask = torch::ones(
+            {self->num_attention_heads, self->attention_head_size});
         std::set<int> sheads;
 
+        // Convert to set and remove already pruned heads
         for(int i =0; i<heads.size; i++){
-            if(this->prunded_heads.count(heads.at(i)) <= 0){
+            if(this->pruned_heads.count(heads.at(i)) <= 0){
                 sheads.insert(heads.at(i));
             }
         }
 
         for(auto it=sheads.begin(); it != sheads.end(); ++it){
-            
+            // Compute how many pruned heads are before the head and move the index accordingly
+            int head = *it;
+            for(auto pit=this->pruned_heads.begin(); pit != this->prune_heads.end(); ++it){
+                if(*pit < *it){head -= 1;}
+            }
+            mask[head] = 0;
+        }
+        mask = mask.view(-1).contiguous().eq(1);
+        auto index = torch::arange(mask.sizes()[0])[mask].toType(torch::kInt64);
+
+        this->self->query = PruneLinearLayer(this->self->query, index);
+        this->self->key = PruneLinearLayer(this->self->key, index);
+        this->self->value = PruneLinearLayer(this->self->value, index);
+        this->output->dense = PruneLinearLayer(this->output->dense, index, 1);
+        // Update hyper params and store pruned heads
+
+        this->self->num_attention_heads = this->self->num_attention_heads - sheads.size();
+        this->self->all_head_size = this->self->attention_head_size * this->self->num_attention_heads;
+
+        for(auto it=sheads.begin(); it != sheads.end(); ++it){
+            this->pruned_heads.insert(*it);
         }
     }
 }
